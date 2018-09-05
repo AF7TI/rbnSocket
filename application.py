@@ -29,7 +29,7 @@ socketio = SocketIO(app, async_mode='eventlet') """use when eventlet is installe
 """ telnet specific stuff """
 child = pexpect.spawn('telnet telnet.reversebeacon.net 7000')
 child.expect ('Please enter your call:')
-child.sendline ('AF7TI')
+child.sendline ('XXXXX')
 child.maxsize = 1 #turns off buffering
 timeout = None
 

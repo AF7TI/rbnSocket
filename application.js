@@ -228,10 +228,10 @@ $(document).ready(function(){
         paused = d3.select(this).property("checked");
       });
       
+      if (paused == false && qryActive == false) {filterdata = data;} else
+      if (paused == false && qryActive == true) {filterdata = data.filter(search, query);} else
+      if (paused == true && qryActive == false) {filterdata = filterdata2;} else
       if (paused == true && qryActive == true) {filterdata = filterdata2.filter(search, query);}
-      if (paused == false && qryActive == true) {filterdata = data.filter(search, query);} 
-      if (paused == true && qryActive == false) {filterdata = filterdata2;} 
-      if (paused == false && qryActive == false) {filterdata = data;}
           //console.log('de: ' + spot.de + ' dx:' + spot.dx + ' ' + spot.freq + ' ' + spot.mode);
            
           //lines_string = '';

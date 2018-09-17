@@ -313,7 +313,6 @@ $(document).ready(function(){
     }
 
     function zoomed() {
-        zoomedOnce = true;
         //if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
         var t = d3.event.transform;
         //xz = d3.event.transform.rescaleX(x);
@@ -329,7 +328,6 @@ $(document).ready(function(){
     }
 
     function brushed() {
-          brushing = true;
           var s = d3.event.selection;
 	  x.domain(s.map(x2.invert, x2));
 	  
@@ -341,7 +339,6 @@ $(document).ready(function(){
 	  svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
 	      .scale(width / (s[1] - s[0]))
 	      .translate(-s[0], 0));
-          brushing = false;
     }
 }
 ); 

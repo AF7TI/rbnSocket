@@ -1,5 +1,22 @@
 """
-Flask socket.io using eventlet as daemon 
+Demo Flask application to test the operation of Flask with socket.io
+
+30th May 2014
+
+===================
+
+Updated 13th April 2018
+
++ Upgraded code to Python 3
++ Used Python3 SocketIO implementation
++ Updated CDN Javascript and CSS sources
+
+===================
+
+Repurposed 4th September 2018
+
++ Added eventlet usage
++ Added telnet example
 
 """
 import os, time
@@ -28,6 +45,12 @@ app.config['DEBUG'] = False
 socketio = SocketIO(app, async_mode='eventlet') #"""use when eventlet is installed"""
 #socketio = SocketIO(app') """use when eventlet not installed"""
 
+#telnet Line Reader Thread
+#thread = Thread(target=background_thread)
+#thread2 = Thread(target=background_thread2)
+#thread_stop_event = Event()
+
+
 #telnet
 import telnetlib
 HOST = 'telnet.reversebeacon.net'
@@ -35,6 +58,24 @@ port1 = 7000
 port2 = 7001
 user = 'XXXXX'
 
+#tn = telnetlib.Telnet(HOST, port=port1, timeout=1)
+#tn.read_until(b'Please enter your call:')
+#tn.write(user.encode('ascii') + b"\n")
+
+#tn2 = telnetlib.Telnet(HOST, port=port2, timeout=1)
+#tn2.read_until(b'Please enter your call:')
+#tn2.write(user.encode('ascii') + b"\n")
+
+'''child = pexpect.spawn('telnet telnet.reversebeacon.net 7001')
+child2 = pexpect.spawn('telnet telnet.reversebeacon.net 7000')
+child.expect ('Please enter your call:')
+child2.expect ('Please enter your call:')
+child.sendline ('AF7TI')
+child2.sendline ('AF7TI')
+child.maxsize = 1 #turns off buffering
+child2.maxsize = 1 #turns off buffering
+timeout = None
+'''
 def background_thread(): #"""use when eventlet is installed"""    
     tn = telnetlib.Telnet(HOST, port=port1)
     tn.read_until(b'Please enter your call:')
@@ -56,6 +97,10 @@ def background_thread2(): #"""use when eventlet is installed"""
         if line2 != '':
               print (line2)
               socketio.emit('newline', {'line': line2}, namespace='/test')
+
+#telnet Line Reader Thread
+thread = Thread(target=background_thread)
+thread2 = Thread(target=background_thread2)
 
 class TelnetThread(Thread): #"""use when eventlet not installed"""
     def __init__(self):
@@ -91,7 +136,7 @@ def test_connect():
     print('Client connected')
     #with thread_lock:
 
-    #Start the thread only if the thread has not been started before.
+    #Start thread only if the thread has not been started before.
     if not thread.isAlive():
         print("Starting Thread")
         thread = socketio.start_background_task(target=background_thread) #"""use when eventlet is installed""" 
@@ -109,10 +154,14 @@ def test_connect():
 def test_disconnect():
     print('Client disconnected')
 
+#if __name__ == '__main__':
+#    #socketio.run(app)
+#    socketio.run(app, host='0.0.0.0', port=5000)
+
 @daemon
 def my_func():
     #if __name__ == '__main__':
     #socketio.run(app)
-    socketio.run(app, host='0.0.0.0', port=5000)
+    socketio.run(app, host='0.0.0.0', port=5001)
 
 my_func()

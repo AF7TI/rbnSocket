@@ -1,9 +1,58 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
-</head>
-<body>
-</body>
-</html>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.4/socket.io.js"></script>
+<script src="https://d3js.org/d3.v5.js"></script>
+<script>
+	
+const parseDate = d3.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
+spot = {};
+var data = [];
+  
+$(document).ready(function(){
+    //connect to the socket server.
+    var socket = io.connect('http://34.219.0.24:5000/test');
+    socket.on('newline', function(msg) {
+        var enc = new TextDecoder(); // always utf-8
+        var string = enc.decode(msg.line);
+        string = string.split(/[ ,]+/).filter(Boolean);
+        console.log("Received line " + string);
+        if (string[2] == 'undefined') {return;}
+	      de = string[2].replace(/-/g, "").replace(/#/g, "").replace(/:/g, "");
+        dx = string[4].replace(/-/g, "").replace(/#/g, "");
+	      freq = string[3];
+        var band = '';
+        if (7000 < freq && freq < 8000) { band = '40';} else
+        if (14000 < freq && freq < 15000) { band = '20';} else
+        if (10000 < freq && freq < 11000) { band = '30';} else
+        if (3500 < freq && freq < 4000) { band = '80';} else
+        if (1800 < freq && freq < 2000) { band = '160';} else
+        if (5000 < freq && freq < 6000) { band = '60';} else
+        if (18000 < freq && freq < 19000) { band = '17';} else
+        if (21000 < freq && freq < 22000) { band = '15';} else
+        if (24000 < freq && freq < 25000) { band = '12';} else
+        if (28000 < freq && freq < 30000) { band = '10';} else
+        if (50000 < freq && freq < 55000) { band = '6';} else
+        if (144000 < freq && freq < 149000) { band = '2';} else
+        if (222000 < freq && freq < 225000) { band = '1.25';} else
+        if (420000 < freq && freq < 450000) { band = '70';} else
+        if (902000 < freq && freq < 929000) { band = '33';}
+        time = parseDate(new Date().toISOString());
+	      mode = string[5];
+	      snr = +string[6];
+        speed = string[8];
+        cq = string[10];
+        ten = string[9];
+        spot = {};
+	      mykey = Date.now() + Math.random(); //Date.now(); //for d3 key function since shifting array modifies index
+	      spot.de = de, spot.dx = dx, spot.mykey = mykey, spot.time = time,
+          spot.freq = +freq, spot.mode = mode, spot.snr = snr, spot.speed = speed, spot.cq = cq,
+          spot.ten = ten, spot.band = band;
+         
+       	//add spot to array if freq is legit
+        if (!isNaN(spot.freq) && !isNaN(spot.snr)) {
+	          data.push(spot);
+	      }
+    });       
+});
+</script>

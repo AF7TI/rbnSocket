@@ -1,3 +1,3 @@
 # rbnSocket
 
-python daemon create websocket stream from reverse beacon network telnet streams
+python websocket server sending reverse beacon network telnet streams

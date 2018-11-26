@@ -9,7 +9,7 @@ port1 = 7000
 port2 = 7001
 user = 'xxxx'
 
-def background_thread(): #"""use when eventlet is installed"""    
+def background_thread(): 
     print("in background thread");
     tn = telnetlib.Telnet(HOST, port=port1)
     tn.read_until(b'Please enter your call:')
@@ -21,7 +21,7 @@ def background_thread(): #"""use when eventlet is installed"""
               #print (line)
               server.send_message_to_all(line)
 
-def background_thread2(): #"""use when eventlet is installed"""
+def background_thread2(): 
     tn2 = telnetlib.Telnet(HOST, port=port2)
     tn2.read_until(b'Please enter your call:')
     tn2.write(user.encode('ascii') + b"\r\n")
@@ -50,17 +50,16 @@ def new_client(client, server):
 
     if not thread.isAlive():
         print("Starting Thread")
-        thread = threading.Thread(target=background_thread) #"""use when eventlet is installed""" 
-        #thread = TelnetThread() """use when eventlet not installed"""
-        thread.start() # """use when eventlet not installed"""
-
+        thread = threading.Thread(target=background_thread) 
+        #thread = TelnetThread() 
+        thread.start() # 
 
     global thread2
     #with thread_lock:
     if not thread2.isAlive():
         print("Starting Thread2")
-        thread2 = threading.Thread(target=background_thread2) #"""use when eventlet is installed"""
-        thread2.start() # """use when eventlet not installed"""
+        thread2 = threading.Thread(target=background_thread2) 
+        thread2.start() 
 
 # Called for every client disconnecting
 def client_left(client, server):

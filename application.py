@@ -5,6 +5,7 @@ import logging
 import sys
 import time
 import datetime as dt
+import os
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
@@ -13,7 +14,7 @@ import telnetlib
 HOST = 'telnet.reversebeacon.net'
 port1 = 7000
 port2 = 7001
-user = 'ESSKEETIT'
+user = os.getenv("RBN_USERNAME")
 
 COUNT = 0
 CW_COUNT = 0
@@ -33,6 +34,15 @@ def increment(x):
         global FT8_COUNT
         FT8_COUNT = FT8_COUNT+1
 
+'''    if COUNT % 10==0:
+        run_time = dt.datetime.today().timestamp() - launch_time
+        spot_rate = int(round(COUNT/run_time))
+        cw_rate = int(round(CW_COUNT/run_time))
+        ft8_rate = int(round(FT8_COUNT/run_time))
+        print("spot rate: {}".format(spot_rate))
+        print("cw rate: {}".format(cw_rate))
+        print("ft8 rate: {}".format(ft8_rate))
+ '''
 
 def background_thread():     
     logging.warning("in background thread");
@@ -158,7 +168,7 @@ def message_received(client, server, message):
 
 PORT=5001
 host="0.0.0.0"
-server = WebsocketServer(PORT, host="0.0.0.0",  loglevel=logging.INFO)
+server = WebsocketServer(PORT, host="0.0.0.0")
 server.set_fn_new_client(new_client)
 #server.set_fn_client_left(client_left)
 server.set_fn_message_received(message_received)
